@@ -1,0 +1,66 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { type Article } from "@/data/articles";
+import { siteConfig } from "@/data/siteConfig";
+
+type Props = {
+  article: Article;
+};
+
+const { article } = Astro.props;
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.title,
+  description: article.description,
+  datePublished: article.datePublished,
+  dateModified: article.dateModified,
+  author: {
+    "@type": "Organization",
+    name: siteConfig.name,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: siteConfig.publisherName,
+  },
+};
+---
+
+<BaseLayout
+  title={article.title}
+  description={article.description}
+  seo={{
+    path: `/blog/${article.slug}`,
+    seoTitle: `${article.title} | ${siteConfig.name}`,
+    keywords: article.keywords,
+    schemaType: "Article",
+    updated: article.dateModified,
+  }}
+  structuredData={[articleSchema]}
+>
+  <article class="content-page">
+    <header class="page-header">
+      <div class="page-header-inner">
+        <p class="eyebrow">{article.category}</p>
+        <h1>{article.title}</h1>
+        <p>{article.description}</p>
+      </div>
+    </header>
+
+    <div class="content-page-shell">
+      <div class="page-content">
+        <p><strong>{article.readTime}</strong> - Mis à jour le {article.dateModified}</p>
+        <Fragment set:html={article.html} />
+      </div>
+      <aside class="content-page-aside" aria-label="Liens de l'article">
+        <p>Continuer</p>
+        <nav>
+          <a class="content-page-link" href="/play/">Jouer à Royal Match</a>
+          <a class="content-page-link" href="/games/">Jeux similaires</a>
+          <a class="content-page-link" href="/how-to-play/">Comment jouer</a>
+          <a class="content-page-link" href="/blog/">Plus de guides</a>
+        </nav>
+      </aside>
+    </div>
+  </article>
+</BaseLayout>

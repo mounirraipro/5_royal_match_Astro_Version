@@ -1,0 +1,252 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles } from "@/data/articles";
+import { categories } from "@/data/gameData";
+import { externalGames } from "@/data/externalGames";
+import { mainGame } from "@/data/mainGame";
+import { siteConfig } from "@/data/siteConfig";
+import { brandAccentClass, getCategoryAccentClass } from "@/data/accentClasses";
+
+const recentPosts = articles.slice(0, 3);
+const featuredCategories = categories.map((category) => ({
+  ...category,
+  preview: category.levels[0]?.thumbnail ?? category.levels[0]?.image,
+}));
+const homeBentoGames = [
+  {
+    href: "/play/",
+    title: mainGame.name,
+    shortTitle: mainGame.shortName,
+    category: "À jouer",
+    thumbnail: mainGame.thumbnail,
+    accent: "#2558d8",
+    accentClass: brandAccentClass,
+  },
+  ...externalGames.map((game) => ({
+    href: `/games/${game.slug}/`,
+    title: game.title,
+    shortTitle: game.shortTitle,
+    category: game.category,
+    thumbnail: game.thumbnail,
+    accent: game.accent,
+    accentClass: game.accentClass,
+  })),
+].slice(0, 8);
+const homeBentoLeft = homeBentoGames.slice(0, 4);
+const homeBentoRight = homeBentoGames.slice(4, 8);
+
+const faqItems = [
+  ["Royal Match est-il gratuit ?", "Oui. Le site ouvre un jeu Playgama de match-3 royal directement dans le navigateur."],
+  ["Quel jeu est intégré ?", "Le lecteur principal utilise Royal Jewels Match sur Playgama, choisi comme correspondance match-3 royale."],
+  ["Faut-il installer une application ?", "Non. Vous pouvez jouer depuis un navigateur moderne sur ordinateur, tablette ou mobile."],
+  ["Les jeux autour du lecteur sont-ils réels ?", "Oui. Chaque carte mène vers une route locale avec un vrai titre Playgama, sa miniature et son iframe."],
+];
+
+const homeStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    name: siteConfig.name,
+    alternateName: ["Royal Match en ligne", "Royal Jewels Match"],
+    url: `${siteConfig.siteUrl}/`,
+    image: new URL(siteConfig.defaultOgImage, siteConfig.siteUrl).href,
+    description: siteConfig.description,
+    applicationCategory: "Game",
+    gamePlatform: ["Web browser", "Desktop", "Mobile", "Tablet"],
+    genre: ["Match-3", "Puzzle", "Casual game"],
+    operatingSystem: "Any modern browser",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.publisherName,
+      url: siteConfig.siteUrl,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout title={siteConfig.name} description={siteConfig.description} structuredData={homeStructuredData}>
+  <section class="hero-play">
+    <div class="home-game-lobby">
+      <div class="game-bento-grid game-bento-grid-side" aria-label="Jeux recommandés">
+        {homeBentoLeft.map((game, index) => (
+          <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
+            <img src={game.thumbnail} alt={`Miniature ${game.title}`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <strong>{game.shortTitle}</strong>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="hero-game">
+        <iframe src={mainGame.localGamePath} title={`Jouer à ${mainGame.name}`} loading="eager" allow="autoplay; fullscreen *" allowfullscreen></iframe>
+      </div>
+      <div class="game-bento-grid game-bento-grid-side" aria-label="Autres jeux Playgama">
+        {homeBentoRight.map((game, index) => (
+          <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
+            <img src={game.thumbnail} alt={`Miniature ${game.title}`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <strong>{game.shortTitle}</strong>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    <div class="hero-copy">
+      <div class="hero-copy-main">
+        <p class="eyebrow">Jeu instantané</p>
+        <h1>Royal Match en ligne</h1>
+        <p>Jouez à un puzzle royal de match-3 en français. Associez les joyaux, créez des bonus, déclenchez des cascades et découvrez des jeux Playgama similaires.</p>
+        <a class="text-link hero-note" href="/how-to-play/">Lire les règles</a>
+      </div>
+      <div class="hero-play-panel">
+        <div class="hero-panel-top">
+          <span>Prêt dans le navigateur</span>
+          <strong>Lancez une partie royale.</strong>
+        </div>
+        <div class="hero-actions">
+          <a class="primary-action" href="/play/"><span class="play-triangle"></span>Jouer en grand</a>
+          <a class="secondary-action" href="/games/">Jeux similaires</a>
+        </div>
+        <dl class="stat-row">
+          <div><dt>{externalGames.length}</dt><dd>Jeux liés</dd></div>
+          <div><dt>{categories.length}</dt><dd>Catégories</dd></div>
+          <div><dt>{articles.length}</dt><dd>Guides</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-search-intent">
+    <div class="home-section-head split-head">
+      <div>
+        <p class="eyebrow">Guide rapide</p>
+        <h2>Associez les joyaux avec méthode.</h2>
+      </div>
+      <p>Le meilleur coup n'est pas toujours le plus visible. Cherchez les bonus, les cascades et les objectifs du niveau.</p>
+    </div>
+    <div class="process-strip">
+      <article><span>01</span><h3>Échangez</h3><p>Déplacez deux pièces voisines pour former un groupe de trois joyaux identiques ou plus.</p></article>
+      <article><span>02</span><h3>Créez</h3><p>Préparez les alignements de quatre ou cinq pièces pour obtenir des bonus puissants.</p></article>
+      <article><span>03</span><h3>Déclenchez</h3><p>Jouez en bas du plateau pour provoquer des cascades et ouvrir de nouvelles associations.</p></article>
+      <article><span>04</span><h3>Explorez</h3><p>Utilisez la route <a href="/games/">Jeux</a> pour trouver d'autres puzzles Playgama proches.</p></article>
+    </div>
+  </section>
+
+  <section class="home-section home-worlds">
+    <div class="home-section-head">
+      <p class="eyebrow">Catégories</p>
+      <h3>Des puzzles proches de Royal Match.</h3>
+      <p>Match-3, couleurs, tuiles et logique: chaque catégorie mène vers de vrais jeux Playgama.</p>
+    </div>
+    <div class="world-showcase">
+      <a class:list={["world-feature", getCategoryAccentClass(featuredCategories[0].name)]} href="/categories/match-3/">
+        <img src={featuredCategories[0].preview} alt="Aperçu catégorie Match-3" width="640" height="360" loading="lazy" />
+        <div>
+          <span>{featuredCategories[0].name}</span>
+          <strong>Commencez par les jeux match-3.</strong>
+          <small>{featuredCategories[0].levels.length} jeux Playgama</small>
+        </div>
+      </a>
+      <div class="world-stack">
+        {featuredCategories.slice(1).map((category) => (
+          <a class:list={["world-card", getCategoryAccentClass(category.name)]} href={`/categories/${category.slug}/`}>
+            <img src={category.preview} alt={`Aperçu ${category.name}`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{category.name}</span>
+              <small>{category.levels.length} jeux</small>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-blog">
+    <div class="blog-editorial">
+      <div class="home-section-head">
+        <p class="eyebrow">Blog</p>
+        <h3>Conseils pour mieux jouer.</h3>
+        <p>Des guides courts pour progresser et choisir les jeux similaires.</p>
+        <a class="text-link" href="/blog/">Lire le blog</a>
+      </div>
+      <div class="blog-board">
+        <a class="editorial-card editorial-card-featured" href={`/blog/${recentPosts[0].slug}/`}>
+          <span>{recentPosts[0].category}</span>
+          <h3>{recentPosts[0].title}</h3>
+          <p>{recentPosts[0].description}</p>
+          <small>{recentPosts[0].readTime}</small>
+        </a>
+        <div class="article-rail">
+          {recentPosts.slice(1).map((post) => (
+            <a class="editorial-card editorial-card-row" href={`/blog/${post.slug}/`}>
+              <span>{post.category}</span>
+              <h3>{post.title}</h3>
+              <small>{post.readTime}</small>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-faq">
+    <div class="faq-layout">
+      <div class="faq-cardlet">
+        <p class="eyebrow">FAQ</p>
+        <h3>Réponses rapides.</h3>
+        <p>Les points essentiels avant de lancer le jeu.</p>
+      </div>
+      <div class="faq-list" data-faq-list>
+        {faqItems.map(([question, answer]) => (
+          <details>
+            <summary>{question}</summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <div>
+      <p class="eyebrow">Prêt ?</p>
+      <h3>Ouvrez le plateau et commencez à associer.</h3>
+    </div>
+    <a class="primary-action" href="/play/"><span class="play-triangle"></span>Jouer à Royal Match</a>
+  </section>
+
+  <script is:inline>
+    (() => {
+      document.querySelectorAll("[data-faq-list]").forEach((list) => {
+        list.querySelectorAll("details").forEach((item) => {
+          item.addEventListener("toggle", () => {
+            if (!item.open) return;
+            list.querySelectorAll("details[open]").forEach((other) => {
+              if (other !== item) other.open = false;
+            });
+          });
+        });
+      });
+    })();
+  </script>
+</BaseLayout>

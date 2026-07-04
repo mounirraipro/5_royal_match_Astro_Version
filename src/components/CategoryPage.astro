@@ -1,0 +1,54 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCategoryAccentClass } from "@/data/accentClasses";
+import { getCategoryBySlug } from "@/data/gameData";
+
+type Props = {
+  slug: string;
+};
+
+const { slug } = Astro.props;
+const category = getCategoryBySlug(slug);
+if (!category) throw new Error(`Missing category: ${slug}`);
+const accentClass = getCategoryAccentClass(category.name);
+const difficultyNames = Array.from(new Set(category.levels.map((level) => level.difficulty))).join(", ");
+---
+
+<BaseLayout title={`Jeux ${category.name}`} description={category.description}>
+  <section class="listing-shell">
+    <header class="listing-header">
+      <p class="eyebrow">Catégorie Royal Match</p>
+      <h1>Jeux {category.name}.</h1>
+      <p>{category.longDescription}</p>
+    </header>
+    <div class="level-grid">
+      {category.levels.map((level) => (
+        <a class:list={["level-card", accentClass]} href={level.href}>
+          <img src={level.thumbnail} alt={`Miniature ${level.title}`} width="640" height="360" loading="lazy" />
+          <strong>{level.title}</strong>
+          <span>{level.gridSize} - {level.difficulty}</span>
+        </a>
+      ))}
+    </div>
+
+    <section class="seo-copy-section" aria-labelledby={`${category.slug}-guide`}>
+      <div class="section-head">
+        <h2 id={`${category.slug}-guide`}>Guide {category.name}.</h2>
+      </div>
+      <div class="seo-copy-grid">
+        <article class="seo-copy-card seo-copy-wide">
+          <h3>Pourquoi cette catégorie convient à Royal Match</h3>
+          <p>{category.longDescription} Les jeux listés ici sont de vrais titres Playgama avec routes jouables et miniatures locales.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Niveau de difficulté</h3>
+          <p>La catégorie {category.name.toLowerCase()} contient des jeux {difficultyNames}. Commencez par le plateau le plus simple, puis testez les jeux plus denses.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Meilleure façon de parcourir</h3>
+          <p>Ouvrez d'abord la fiche du jeu pour lire les règles, puis chargez l'iframe quand vous êtes prêt à jouer.</p>
+        </article>
+      </div>
+    </section>
+  </section>
+</BaseLayout>

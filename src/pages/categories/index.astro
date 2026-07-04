@@ -1,0 +1,46 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCategoryAccentClass } from "@/data/accentClasses";
+import { categories } from "@/data/gameData";
+
+const categoryNames = categories.map((category) => category.name).join(", ");
+---
+
+<BaseLayout title="Catégories Royal Match" description={`Parcourez les catégories de jeux Playgama proches de Royal Match: ${categoryNames}.`}>
+  <section class="listing-shell">
+    <header class="listing-header">
+      <p class="eyebrow">Catégories de puzzles</p>
+      <h1>Match-3, couleurs et logique.</h1>
+      <p>Ces catégories organisent les jeux similaires selon leur sensation: cascades rapides, tri de couleurs ou réflexion avec tuiles.</p>
+    </header>
+    <div class="category-grid">
+      {categories.map((category) => (
+        <a class:list={["media-card", getCategoryAccentClass(category.name)]} href={`/categories/${category.slug}/`}>
+          <img src={category.levels[0]?.thumbnail ?? category.levels[0]?.image} alt={`Aperçu ${category.name}`} width="640" height="360" loading="lazy" />
+          <span>{category.name}</span>
+          <small>{category.levels.length} jeux Playgama</small>
+        </a>
+      ))}
+    </div>
+
+    <section class="seo-copy-section" aria-labelledby="category-guide">
+      <div class="section-head">
+        <h2 id="category-guide">Guide des catégories.</h2>
+      </div>
+      <div class="seo-copy-grid">
+        <article class="seo-copy-card seo-copy-wide">
+          <h3>Choisir par rythme</h3>
+          <p>Match-3 est le plus proche de Royal Match. Les puzzles couleur sont plus calmes, tandis que les tuiles demandent davantage d'observation.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Cartes jouables</h3>
+          <p>Chaque carte mène vers une route de jeu réelle avec iframe Playgama, miniature et conseils en français.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Commencez par Royal Match</h3>
+          <p>Ouvrez la page Jouer pour le puzzle principal, puis revenez aux catégories pour varier.</p>
+        </article>
+      </div>
+    </section>
+  </section>
+</BaseLayout>

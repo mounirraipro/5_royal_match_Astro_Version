@@ -1,0 +1,85 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles } from "@/data/articles";
+import { categories } from "@/data/gameData";
+import { externalGames } from "@/data/externalGames";
+import { seoPages } from "@/data/seo";
+import { siteConfig } from "@/data/siteConfig";
+
+const staticRoutes = [
+  { path: "/", title: "Accueil" },
+  { path: "/play/", title: "Jouer" },
+  { path: "/game/index.html", title: "Lecteur Royal Match intégré" },
+  { path: "/games/", title: "Jeux similaires" },
+  { path: "/categories/", title: "Catégories" },
+  ...seoPages
+    .filter((page) => !["/", "/play", "/games", "/categories"].includes(page.path))
+    .map((page) => ({ path: `${page.path}/`, title: page.title })),
+];
+---
+
+<BaseLayout
+  title="Plan du site"
+  description="Plan du site royalmatch.fr avec les routes de jeu, les jeux Playgama associés, les catégories, les guides et les pages légales."
+  seo={{
+    path: "/sitemap",
+    seoTitle: `${siteConfig.name} - Plan du site`,
+    description: "Plan du site royalmatch.fr avec toutes les pages importantes et les jeux Playgama similaires.",
+  }}
+>
+  <section class="listing-shell">
+    <header class="listing-header">
+      <p class="eyebrow">Navigation</p>
+      <h1>Plan du site Royal Match.</h1>
+      <p class="mt-4 max-w-[760px] text-base leading-7 text-muted">Utilisez les sections ci-dessous pour accéder au jeu, aux jeux similaires, aux catégories, aux guides, au support et aux pages légales.</p>
+    </header>
+
+    <section class="seo-copy-section">
+      <div class="section-head"><h2>Pages principales</h2></div>
+      <div class="seo-copy-grid">
+        {staticRoutes.map((route) => (
+          <a class="seo-copy-card" href={route.path}>
+            <h3>{route.title}</h3>
+            <p>{route.path}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="seo-copy-section">
+      <div class="section-head"><h2>Jeux Playgama</h2></div>
+      <div class="seo-copy-grid">
+        {externalGames.map((game) => (
+          <a class="seo-copy-card" href={`/games/${game.slug}/`}>
+            <h3>{game.title}</h3>
+            <p>{game.category}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="seo-copy-section">
+      <div class="section-head"><h2>Catégories</h2></div>
+      <div class="seo-copy-grid">
+        {categories.map((category) => (
+          <a class="seo-copy-card" href={`/categories/${category.slug}/`}>
+            <h3>{category.name}</h3>
+            <p>{category.levels.length} jeux</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="seo-copy-section">
+      <div class="section-head"><h2>Articles</h2></div>
+      <div class="seo-copy-grid">
+        {articles.map((article) => (
+          <a class="seo-copy-card" href={`/blog/${article.slug}/`}>
+            <h3>{article.title}</h3>
+            <p>{article.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </section>
+</BaseLayout>

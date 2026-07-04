@@ -1,0 +1,25 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles } from "@/data/articles";
+---
+
+<BaseLayout title="Blog Royal Match" description="Lisez des guides Royal Match, des astuces match-3, des conseils mobile et des recommandations de jeux Playgama similaires.">
+  <section class="listing-shell">
+    <header class="listing-header">
+      <p class="eyebrow">Guides</p>
+      <h1>Blog Royal Match</h1>
+      <p>Des articles courts pour mieux lire le plateau, préparer les bonus et choisir des jeux proches après une partie.</p>
+    </header>
+
+    <div class="article-grid">
+      {articles.map((article) => (
+        <a class="editorial-card" href={`/blog/${article.slug}/`}>
+          <span>{article.category}</span>
+          <h2>{article.title}</h2>
+          <p>{article.description}</p>
+          <small>{article.readTime}</small>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

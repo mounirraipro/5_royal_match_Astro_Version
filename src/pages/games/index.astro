@@ -1,0 +1,52 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { externalGames } from "@/data/externalGames";
+import { mainGame } from "@/data/mainGame";
+---
+
+<BaseLayout title="Jeux comme Royal Match" description="Jouez à des jeux Playgama de match-3, tuiles, tri de couleurs et logique sélectionnés pour les fans de Royal Match.">
+  <section class="listing-shell">
+    <header class="listing-header">
+      <p class="eyebrow">Bibliothèque Playgama</p>
+      <h1>Jeux comme Royal Match.</h1>
+      <p>Chaque carte utilise un vrai titre Playgama, une miniature locale, une catégorie et une route jouable. Commencez par Royal Match, puis explorez des puzzles proches.</p>
+      <div class="hero-actions">
+        <a class="primary-action" href="/play/"><span class="play-triangle"></span>Jouer à {mainGame.name}</a>
+        <a class="secondary-action" href="/categories/">Parcourir les catégories</a>
+      </div>
+    </header>
+
+    <div class="game-bento-grid" aria-label="Jeux Playgama similaires">
+      {externalGames.map((game, index) => (
+        <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={`/games/${game.slug}/`}>
+          <img src={game.thumbnail} alt={`Miniature ${game.title}`} width="640" height="360" loading={index < 2 ? "eager" : "lazy"} />
+          <div>
+            <span>{game.category}</span>
+            <strong>{game.shortTitle}</strong>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <section class="seo-copy-section" aria-labelledby="games-guide-title">
+      <div class="section-head">
+        <p class="eyebrow">Sélection</p>
+        <h2 id="games-guide-title">Pourquoi ces jeux conviennent aux joueurs de Royal Match.</h2>
+      </div>
+      <div class="seo-copy-grid">
+        <article class="seo-copy-card seo-copy-wide">
+          <h3>Même lecture de plateau</h3>
+          <p>Ces jeux récompensent les mêmes réflexes: reconnaître les couleurs, préparer le prochain mouvement et choisir les associations qui ouvrent le plateau.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Plus proches</h3>
+          <p>Super Candy Jewels et Good Sort Master sont les options les plus proches si vous voulez garder le rythme d'association.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Plus calmes</h3>
+          <p>Magic Water Sort, Nuts Puzzle et Mahjong Connect proposent une pause plus posée après un niveau de match-3.</p>
+        </article>
+      </div>
+    </section>
+  </section>
+</BaseLayout>
