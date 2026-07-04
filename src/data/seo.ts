@@ -9,6 +9,7 @@ export type SeoPage = {
   seoTitle?: string;
   keywords?: string[];
   schemaType?: string;
+  datePublished?: string;
   noIndex?: boolean;
   priority?: number;
   changeFrequency?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
@@ -57,26 +58,26 @@ const routeFallbackSeo = (route: SiteRoute): SeoPage => ({
 const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
   "/": {
     title: siteConfig.name,
-    seoTitle: `${siteConfig.name} en ligne - jeu match-3 gratuit`,
+    seoTitle: `${siteConfig.name} en ligne - jeu match-3 gratuit sans telechargement`,
     description: siteConfig.description,
     priority: 1,
     changeFrequency: "weekly",
   },
   "/play": {
-    seoTitle: `Jouer à ${siteConfig.name} en ligne gratuitement`,
-    description: `Jouez à ${siteConfig.name} en ligne avec un plateau de joyaux, des bonus, des cascades et aucun téléchargement depuis ce site.`,
+    seoTitle: `Jouer a ${siteConfig.name} en ligne gratuitement sans telechargement`,
+    description: `Jouez a ${siteConfig.name} en ligne avec une experience match-3 royale, des bonus, des cascades et aucun telechargement depuis ce site.`,
     priority: 0.9,
     changeFrequency: "weekly",
   },
   "/games": {
-    seoTitle: `Jeux comme ${siteConfig.name} - puzzles Playgama`,
-    description: "Parcourez des jeux Playgama de match-3, tuiles, tri de couleurs et logique choisis pour les joueurs de Royal Match.",
+    seoTitle: `Jeux comme ${siteConfig.name} - alternatives match-3 gratuites`,
+    description: "Parcourez des jeux comme Royal Match: match-3, tuiles, tri de couleurs et puzzles gratuits choisis pour les joueurs de match-3.",
     priority: 0.85,
     changeFrequency: "weekly",
   },
   "/categories": {
-    seoTitle: `${siteConfig.name} catégories - match-3 et puzzles couleur`,
-    description: "Explorez les catégories de jeux similaires à Royal Match: match-3, puzzles couleur, tuiles et logique.",
+    seoTitle: `${siteConfig.name} categories - match-3 et puzzles couleur`,
+    description: "Explorez les categories de jeux similaires a Royal Match: match-3, puzzles couleur, tuiles et logique.",
     priority: 0.7,
     changeFrequency: "monthly",
   },
@@ -157,6 +158,37 @@ export const buildJsonLd = (page: SeoPage, canonicalUrl: string) => {
   const publisherId = `${siteConfig.siteUrl.replace(/\/$/, "")}/#organization`;
   const pageId = `${canonicalUrl}#webpage`;
   const schemaType = page.schemaType ?? "WebPage";
+  const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": schemaType,
+    "@id": pageId,
+    url: canonicalUrl,
+    name: buildPageTitle(page),
+    headline: page.title,
+    description: page.description,
+    isPartOf: {
+      "@id": websiteId,
+    },
+    about: siteConfig.topicKeywords,
+    inLanguage: siteConfig.language,
+    publisher: {
+      "@id": publisherId,
+    },
+    ...(schemaType === "Article"
+      ? {
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": canonicalUrl,
+          },
+          image: new URL(siteConfig.defaultOgImage, siteConfig.siteUrl).href,
+          datePublished: page.datePublished ?? page.updated ?? siteConfig.legalLastUpdated,
+          author: {
+            "@id": publisherId,
+          },
+        }
+      : {}),
+    dateModified: page.updated ?? siteConfig.legalLastUpdated,
+  };
   const breadcrumbs = [
     {
       "@type": "ListItem",
@@ -197,25 +229,9 @@ export const buildJsonLd = (page: SeoPage, canonicalUrl: string) => {
       name: siteConfig.publisherName,
       url: siteConfig.siteUrl,
       sameAs: siteConfig.sameAs,
+      description: siteConfig.disclaimer,
     },
-    {
-      "@context": "https://schema.org",
-      "@type": schemaType,
-      "@id": pageId,
-      url: canonicalUrl,
-      name: buildPageTitle(page),
-      headline: page.title,
-      description: page.description,
-      isPartOf: {
-        "@id": websiteId,
-      },
-      about: siteConfig.topicKeywords,
-      inLanguage: siteConfig.language,
-      publisher: {
-        "@id": publisherId,
-      },
-      dateModified: page.updated ?? siteConfig.legalLastUpdated,
-    },
+    pageSchema,
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",

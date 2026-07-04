@@ -8,34 +8,40 @@ const rightGames = externalGames.slice(4, 8);
 const guideItems = [
   {
     id: "royal-match-rules",
-    label: "Règles",
+    label: "Regles",
     title: "Alignez trois joyaux",
-    body: "Échangez deux pièces voisines pour créer une ligne ou une colonne de trois joyaux identiques.",
+    body: "Echangez deux pieces voisines pour creer une ligne ou une colonne de trois joyaux identiques. Les coups utiles rapprochent toujours l'objectif du niveau.",
   },
   {
     id: "royal-match-bonus",
-    label: "Bonus",
-    title: "Préparez les gros coups",
-    body: "Les associations de quatre ou cinq pièces donnent des bonus qui nettoient des lignes, zones ou couleurs entières.",
+    label: "Boosters",
+    title: "Preparez les gros coups",
+    body: "Les associations de quatre ou cinq pieces donnent des boosters comme la fusee, la TNT, l'helice ou la boule lumineuse selon la logique du match-3.",
   },
   {
     id: "royal-match-mobile",
     label: "Mobile",
     title: "Jouez avec des gestes courts",
-    body: "Sur téléphone, utilisez des mouvements précis et attendez la fin des animations avant de choisir le coup suivant.",
+    body: "Sur telephone, utilisez des mouvements precis et attendez la fin des animations avant de choisir le coup suivant.",
+  },
+  {
+    id: "royal-match-disclaimer",
+    label: "Info",
+    title: "Site independant",
+    body: "royalmatch.fr n'est pas le site officiel de Dream Games. Le lecteur propose une experience Playgama similaire pour jouer vite dans le navigateur.",
   },
 ];
 ---
 
 <BaseLayout
-  title={`Jouer à ${mainGame.name}`}
-  description="Jouez à Royal Match en ligne gratuitement avec un iframe Playgama, des jeux similaires et des conseils de match-3."
+  title={`Jouer a ${mainGame.name}`}
+  description="Jouez a Royal Match en ligne gratuitement, sans telechargement, avec une experience Playgama similaire, des jeux comme Royal Match et des astuces match-3."
 >
   <section class="embedded-game-page accent-blue">
     <header class="embedded-game-head">
       <nav class="crumbs"><a href="/">Accueil</a><span>/</span><span>Jouer</span></nav>
-      <h1>Jouer à Royal Match en ligne.</h1>
-      <p>{mainGame.description}</p>
+      <h1>Jouer a Royal Match en ligne gratuitement.</h1>
+      <p>Ouvrez une experience match-3 royale directement dans le navigateur, sans telechargement. royalmatch.fr est un site independant: Royal Match est une marque de Dream Games et le jeu integre peut etre une experience Playgama similaire.</p>
     </header>
 
     <div class="embedded-game-layout">
@@ -79,7 +85,7 @@ const guideItems = [
       <div class="game-guide-main">
         <header class="game-guide-head">
           <h2 id="play-guide-title">Associez les joyaux sans gaspiller vos coups.</h2>
-          <p>Les cartes autour du lecteur mènent vers de vrais jeux Playgama similaires quand vous voulez varier après une partie.</p>
+          <p>Les cartes autour du lecteur menent vers de vrais jeux Playgama similaires quand vous voulez varier apres une partie. Pour progresser, lisez d'abord l'objectif, creez des boosters, puis combinez-les dans les zones bloquees.</p>
         </header>
         <div class="game-guide-flow">
           {guideItems.map((item, index) => (
